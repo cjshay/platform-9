@@ -33,7 +33,7 @@ export function Feed({
   }
 
   return (
-    <div className="mt-4.5 grid gap-4">
+    <div className="mt-4.5 border-t border-line">
       {list.map((post) => (
         <PostCard
           key={post.id}

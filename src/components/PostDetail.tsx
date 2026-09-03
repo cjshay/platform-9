@@ -1,8 +1,9 @@
 import { useState } from 'react'
 import { Avatar } from '@/components/Avatar'
-import { ModalHeader } from '@/components/Modal'
 import { ProfileBlock } from '@/components/ProfileBlock'
-import { btnClass, btnGhostClass, btnSmallClass, inputClass } from '@/components/ui'
+import { Button } from '@/components/ui/button'
+import { DialogTitle } from '@/components/ui/dialog'
+import { Textarea } from '@/components/ui/textarea'
 import { timeAgo } from '@/lib/time'
 import type { Claim, Post, Profile } from '@/types'
 
@@ -14,7 +15,6 @@ export function PostDetail({
   profileFor,
   onSubmitClaim,
   onOpenThread,
-  onClose,
 }: {
   post: Post
   authorProfile: Profile
@@ -23,7 +23,6 @@ export function PostDetail({
   profileFor: (uid: string, fallbackName?: string) => Profile
   onSubmitClaim: (note: string) => void
   onOpenThread: (claimId: string) => void
-  onClose: () => void
 }) {
   const [note, setNote] = useState('')
   const isAuthor = post.author_id === currentUid
@@ -31,7 +30,7 @@ export function PostDetail({
 
   return (
     <>
-      <ModalHeader title={post.location || 'somewhere'} onClose={onClose} />
+      <DialogTitle>{post.location || 'somewhere'}</DialogTitle>
       <div className="mb-2 flex flex-wrap items-center gap-1.5 font-mono text-xs text-text-dim uppercase">
         <span>{post.when_text}</span> &middot; <span>{timeAgo(post.created_at)}</span> &middot; by{' '}
         <Avatar profile={authorProfile} size={16} /> {authorProfile.name}
@@ -41,7 +40,7 @@ export function PostDetail({
 
       {isAuthor ? (
         <>
-          <hr className="my-4 border-white/10" />
+          <hr className="my-4 border-line" />
           <h3 className="mb-2.5 font-display text-base font-semibold tracking-wide text-amber uppercase">
             claims ({claims.length})
           </h3>
@@ -52,7 +51,7 @@ export function PostDetail({
               {claims.map((claim) => {
                 const claimantProfile = profileFor(claim.claimant_id, claim.claimant_name)
                 return (
-                  <div key={claim.id} className="flex items-start justify-between gap-2.5 rounded bg-ink-softer px-3 py-2.5">
+                  <div key={claim.id} className="flex items-start justify-between gap-2.5 rounded bg-panel-soft px-3 py-2.5">
                     <div>
                       <div className="flex flex-wrap items-center gap-1.5 font-mono text-xs text-text-dim">
                         <Avatar profile={claimantProfile} size={18} /> {claimantProfile.name} &middot;{' '}
@@ -61,13 +60,9 @@ export function PostDetail({
                       <div className="mt-0.5 font-serif text-sm">{claim.note}</div>
                       <ProfileBlock profile={claimantProfile} />
                     </div>
-                    <button
-                      type="button"
-                      className={`${btnGhostClass} ${btnSmallClass} shrink-0`}
-                      onClick={() => onOpenThread(claim.id)}
-                    >
+                    <Button variant="ghost" size="small" className="shrink-0" onClick={() => onOpenThread(claim.id)}>
                       message
-                    </button>
+                    </Button>
                   </div>
                 )
               })}
@@ -76,33 +71,30 @@ export function PostDetail({
         </>
       ) : myClaim ? (
         <>
-          <hr className="my-4 border-white/10" />
+          <hr className="my-4 border-line" />
           <h3 className="mb-2.5 font-display text-base font-semibold tracking-wide text-amber uppercase">
             your claim
           </h3>
-          <div className="flex items-center justify-between gap-2.5 rounded bg-ink-softer px-3 py-2.5">
+          <div className="flex items-center justify-between gap-2.5 rounded bg-panel-soft px-3 py-2.5">
             <div className="font-serif text-sm">{myClaim.note}</div>
-            <button type="button" className={`${btnGhostClass} ${btnSmallClass}`} onClick={() => onOpenThread(myClaim.id)}>
+            <Button variant="ghost" size="small" onClick={() => onOpenThread(myClaim.id)}>
               message
-            </button>
+            </Button>
           </div>
         </>
       ) : (
         <>
-          <hr className="my-4 border-white/10" />
+          <hr className="my-4 border-line" />
           <h3 className="mb-2.5 font-display text-base font-semibold tracking-wide text-amber uppercase">
             is this you?
           </h3>
           <div className="grid gap-2.5">
-            <textarea
-              className={inputClass}
+            <Textarea
               placeholder="prove it — what were you wearing, what did you say..."
               value={note}
               onChange={(e) => setNote(e.target.value)}
             />
-            <button
-              type="button"
-              className={btnClass}
+            <Button
               onClick={() => {
                 if (!note.trim()) return
                 onSubmitClaim(note.trim().slice(0, 400))
@@ -110,7 +102,7 @@ export function PostDetail({
               }}
             >
               Send claim
-            </button>
+            </Button>
           </div>
         </>
       )}

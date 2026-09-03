@@ -1,4 +1,5 @@
 import { Avatar } from '@/components/Avatar'
+import { Button } from '@/components/ui/button'
 import type { Identity } from '@/types'
 
 export function Header({
@@ -11,7 +12,7 @@ export function Header({
   onOpenIdentities: () => void
 }) {
   return (
-    <header className="border-b-2 border-amber bg-gradient-to-b from-ink-soft to-transparent px-5 pt-7 pb-4.5">
+    <header className="border-b-2 border-amber bg-gradient-to-b from-panel to-transparent px-5 pt-7 pb-4.5">
       <div className="mx-auto flex max-w-[920px] flex-wrap items-end justify-between gap-4">
         <div>
           <h1 className="m-0 font-display text-4xl font-bold tracking-wide uppercase text-balance sm:text-5xl">
@@ -22,25 +23,20 @@ export function Header({
           </div>
         </div>
         <div className="flex items-center gap-2 font-mono text-xs text-text-dim">
-          <span className="inline-flex items-center">
-            {identity ? <Avatar profile={identity} size={22} /> : null}
-          </span>
+          {identity ? <Avatar profile={identity} size={22} /> : null}
           <span>{identity?.name ?? 'anon'}</span>
-          <button
-            type="button"
-            onClick={onOpenProfile}
-            className="cursor-pointer rounded border border-white/10 bg-transparent px-2 py-0.5 font-mono text-xs text-text-dim hover:border-amber hover:text-amber"
-          >
+          <Button variant="subtle" size="small" className="normal-case" onClick={onOpenProfile}>
             profile
-          </button>
-          <button
-            type="button"
+          </Button>
+          <Button
+            variant="subtle"
+            size="small"
+            className="normal-case"
             onClick={onOpenIdentities}
             title="switch between saved test identities"
-            className="cursor-pointer rounded border border-white/10 bg-transparent px-2 py-0.5 font-mono text-xs text-text-dim hover:border-amber hover:text-amber"
           >
             identities
-          </button>
+          </Button>
         </div>
       </div>
     </header>

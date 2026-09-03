@@ -1,7 +1,10 @@
-import { useState } from 'react'
+import { type ChangeEvent, useState } from 'react'
 import { Avatar } from '@/components/Avatar'
-import { ModalHeader } from '@/components/Modal'
-import { btnClass, btnGhostClass, btnSmallClass, inputClass, labelClass } from '@/components/ui'
+import { Button } from '@/components/ui/button'
+import { DialogDescription, DialogTitle } from '@/components/ui/dialog'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Textarea } from '@/components/ui/textarea'
 import { resizeImageToDataUrl } from '@/lib/image'
 import type { Identity } from '@/types'
 
@@ -23,7 +26,7 @@ export function ProfileForm({
   const [location, setLocation] = useState(identity.location)
   const [interestsRaw, setInterestsRaw] = useState(identity.interests.join(', '))
 
-  async function handlePhoto(e: React.ChangeEvent<HTMLInputElement>) {
+  async function handlePhoto(e: ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0]
     if (!file) return
     if (!file.type.startsWith('image/')) {
@@ -50,59 +53,37 @@ export function ProfileForm({
 
   return (
     <>
-      <ModalHeader title="edit your profile" onClose={onClose} />
-      <p className="mb-3.5 text-sm text-text-dim">
-        Shown to people you claim or get claimed by — helps them recognize you.
-      </p>
+      <DialogTitle>edit your profile</DialogTitle>
+      <DialogDescription>Shown to people you claim or get claimed by — helps them recognize you.</DialogDescription>
       <div className="grid gap-3">
         <div className="flex items-center gap-3.5">
-          <div className="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-full bg-ink-softer">
-            <Avatar profile={{ avatar, photo }} size={44} />
+          <div className="h-16 w-16 shrink-0 rounded-full bg-panel-soft">
+            <Avatar profile={{ avatar, photo }} size={64} />
           </div>
           <div className="flex-1">
-            <label className={labelClass} htmlFor="pf-photo">
-              Photo (optional, replaces avatar)
-            </label>
+            <Label htmlFor="pf-photo">Photo (optional, replaces avatar)</Label>
             <input type="file" id="pf-photo" accept="image/*" onChange={handlePhoto} className="text-sm" />
             {photo ? (
-              <button
-                type="button"
-                className={`${btnGhostClass} ${btnSmallClass} mt-1.5 block`}
-                onClick={() => setPhoto('')}
-              >
+              <Button type="button" variant="ghost" size="small" className="mt-1.5 block" onClick={() => setPhoto('')}>
                 Remove photo
-              </button>
+              </Button>
             ) : null}
           </div>
         </div>
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
           <div>
-            <label className={labelClass} htmlFor="pf-avatar">
-              Emoji avatar (used if no photo)
-            </label>
-            <input id="pf-avatar" className={inputClass} value={avatar} maxLength={4} onChange={(e) => setAvatar(e.target.value)} />
+            <Label htmlFor="pf-avatar">Emoji avatar (used if no photo)</Label>
+            <Input id="pf-avatar" value={avatar} maxLength={4} onChange={(e) => setAvatar(e.target.value)} />
           </div>
           <div>
-            <label className={labelClass} htmlFor="pf-name">
-              Name
-            </label>
-            <input
-              id="pf-name"
-              className={inputClass}
-              value={name}
-              maxLength={24}
-              placeholder="your handle"
-              onChange={(e) => setName(e.target.value)}
-            />
+            <Label htmlFor="pf-name">Name</Label>
+            <Input id="pf-name" value={name} maxLength={24} placeholder="your handle" onChange={(e) => setName(e.target.value)} />
           </div>
         </div>
         <div>
-          <label className={labelClass} htmlFor="pf-bio">
-            Say something about yourself
-          </label>
-          <textarea
+          <Label htmlFor="pf-bio">Say something about yourself</Label>
+          <Textarea
             id="pf-bio"
-            className={inputClass}
             maxLength={140}
             value={bio}
             placeholder="grad student, into climbing and bad puns"
@@ -111,33 +92,25 @@ export function ProfileForm({
         </div>
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
           <div>
-            <label className={labelClass} htmlFor="pf-location">
-              General location
-            </label>
-            <input
+            <Label htmlFor="pf-location">General location</Label>
+            <Input
               id="pf-location"
-              className={inputClass}
               value={location}
               placeholder="brooklyn, near prospect park"
               onChange={(e) => setLocation(e.target.value)}
             />
           </div>
           <div>
-            <label className={labelClass} htmlFor="pf-interests">
-              Interests (comma separated)
-            </label>
-            <input
+            <Label htmlFor="pf-interests">Interests (comma separated)</Label>
+            <Input
               id="pf-interests"
-              className={inputClass}
               value={interestsRaw}
               placeholder="climbing, jazz, dogs"
               onChange={(e) => setInterestsRaw(e.target.value)}
             />
           </div>
         </div>
-        <button type="button" className={btnClass} onClick={submit}>
-          Save profile
-        </button>
+        <Button onClick={submit}>Save profile</Button>
       </div>
     </>
   )

@@ -6,6 +6,9 @@ A missed-connections board: post about a fleeting real-world encounter, let peop
 
 - **React 19 + TypeScript + Vite** — UI and build tooling
 - **Tailwind CSS v4** — styling, via the `@tailwindcss/vite` plugin (no separate PostCSS config needed)
+- **Radix UI + class-variance-authority** (the shadcn/ui pattern) — accessible, unstyled primitives in
+  `src/components/ui/` (`Dialog`, `Tabs`, `Avatar`, `Button`, ...) with our own brand skin applied via variants,
+  rather than a black-box component library
 - **Supabase** — Postgres database + realtime subscriptions. No auth yet (see below).
 - **oxlint** + **Prettier** — linting and formatting
 

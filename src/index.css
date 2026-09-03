@@ -1,25 +1,32 @@
 @import 'tailwindcss';
+@import 'tw-animate-css';
 
 @theme {
-  --font-display: 'Barlow Condensed', ui-sans-serif, sans-serif;
-  --font-serif: 'Source Serif 4', Georgia, serif;
+  --font-display: 'Big Shoulders Display', ui-sans-serif, sans-serif;
+  --font-serif: 'Fraunces', Georgia, serif;
   --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
 
-  --color-ink: #12182a;
-  --color-ink-soft: #1c2440;
-  --color-ink-softer: #2a3350;
-  --color-amber: #e2a542;
-  --color-amber-dim: #b9832f;
-  --color-teal: #4a7a72;
-  --color-rust: #c1573c;
-  --color-text: #eae4d6;
-  --color-text-dim: #a9a494;
+  --color-void: #0a0d16;
+  --color-panel: #12172a;
+  --color-panel-soft: #1b2140;
+  --color-line: rgba(255, 255, 255, 0.08);
+  --color-amber: #f0a63e;
+  --color-amber-dim: #c17f1f;
+  --color-teal: #5fbfae;
+  --color-rust: #d6603f;
+  --color-text: #eae6da;
+  --color-text-dim: #8d8fa3;
 }
 
 body {
   margin: 0;
   min-height: 100vh;
-  background: var(--color-ink);
+  background: var(--color-void);
   color: var(--color-text);
   font-family: var(--font-serif);
+}
+
+::selection {
+  background: var(--color-amber);
+  color: var(--color-void);
 }

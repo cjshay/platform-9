@@ -4,11 +4,11 @@ import { Feed } from '@/components/Feed'
 import { Filters } from '@/components/Filters'
 import { Header } from '@/components/Header'
 import { IdentityList } from '@/components/IdentityList'
-import { Modal } from '@/components/Modal'
 import { PostDetail } from '@/components/PostDetail'
 import { ProfileForm } from '@/components/ProfileForm'
 import { ThreadPanel } from '@/components/ThreadPanel'
 import { Toast } from '@/components/Toast'
+import { Dialog, DialogContent } from '@/components/ui/dialog'
 import { useClaims } from '@/hooks/useClaims'
 import { useIdentity } from '@/hooks/useIdentity'
 import { usePosts } from '@/hooks/usePosts'
@@ -17,7 +17,12 @@ import { useToast } from '@/hooks/useToast'
 import { supabase } from '@/lib/supabase'
 import type { Filter } from '@/types'
 
-type ModalState = { kind: 'profile' } | { kind: 'identities' } | { kind: 'post'; postId: string } | { kind: 'thread'; claimId: string } | null
+type ModalState =
+  | { kind: 'profile' }
+  | { kind: 'identities' }
+  | { kind: 'post'; postId: string }
+  | { kind: 'thread'; claimId: string }
+  | null
 
 function App() {
   const { identities, current: identity, updateProfile, switchTo, addIdentity } = useIdentity()
@@ -77,7 +82,11 @@ function App() {
 
   return (
     <div className="min-h-screen">
-      <Header identity={identity} onOpenProfile={() => setModal({ kind: 'profile' })} onOpenIdentities={() => setModal({ kind: 'identities' })} />
+      <Header
+        identity={identity}
+        onOpenProfile={() => setModal({ kind: 'profile' })}
+        onOpenIdentities={() => setModal({ kind: 'identities' })}
+      />
 
       <div className="mx-auto max-w-[920px] px-5 pb-20">
         <ComposeForm onSubmit={handleCreatePost} />
@@ -92,14 +101,14 @@ function App() {
         />
       </div>
 
-      {modal?.kind === 'profile' && (
-        <Modal onClose={() => setModal(null)}>
+      <Dialog open={modal?.kind === 'profile'} onOpenChange={(open) => !open && setModal(null)}>
+        <DialogContent>
           <ProfileForm identity={identity} onSave={updateProfile} onClose={() => setModal(null)} onError={showToast} />
-        </Modal>
-      )}
+        </DialogContent>
+      </Dialog>
 
-      {modal?.kind === 'identities' && (
-        <Modal onClose={() => setModal(null)}>
+      <Dialog open={modal?.kind === 'identities'} onOpenChange={(open) => !open && setModal(null)}>
+        <DialogContent>
           <IdentityList
             identities={identities}
             currentUid={identity.uid}
@@ -114,35 +123,37 @@ function App() {
             }}
             onClose={() => setModal(null)}
           />
-        </Modal>
-      )}
+        </DialogContent>
+      </Dialog>
 
-      {modal?.kind === 'post' && openPost && (
-        <Modal onClose={() => setModal(null)}>
-          <PostDetail
-            post={openPost}
-            authorProfile={profileFor(openPost.author_id, openPost.author_name)}
-            claims={openPostClaims}
-            currentUid={identity.uid}
-            profileFor={profileFor}
-            onSubmitClaim={(note) => void handleSubmitClaim(openPost.id, note)}
-            onOpenThread={(claimId) => setModal({ kind: 'thread', claimId })}
-            onClose={() => setModal(null)}
-          />
-        </Modal>
-      )}
+      <Dialog open={modal?.kind === 'post'} onOpenChange={(open) => !open && setModal(null)}>
+        <DialogContent>
+          {openPost ? (
+            <PostDetail
+              post={openPost}
+              authorProfile={profileFor(openPost.author_id, openPost.author_name)}
+              claims={openPostClaims}
+              currentUid={identity.uid}
+              profileFor={profileFor}
+              onSubmitClaim={(note) => void handleSubmitClaim(openPost.id, note)}
+              onOpenThread={(claimId) => setModal({ kind: 'thread', claimId })}
+            />
+          ) : null}
+        </DialogContent>
+      </Dialog>
 
-      {modal?.kind === 'thread' && openThreadClaim && otherUid && (
-        <Modal onClose={() => setModal(null)}>
-          <ThreadPanel
-            claim={openThreadClaim}
-            post={openThreadPost}
-            currentUid={identity.uid}
-            otherProfile={profileFor(otherUid, otherFallback)}
-            onClose={() => setModal(null)}
-          />
-        </Modal>
-      )}
+      <Dialog open={modal?.kind === 'thread'} onOpenChange={(open) => !open && setModal(null)}>
+        <DialogContent>
+          {openThreadClaim && otherUid ? (
+            <ThreadPanel
+              claim={openThreadClaim}
+              post={openThreadPost}
+              currentUid={identity.uid}
+              otherProfile={profileFor(otherUid, otherFallback)}
+            />
+          ) : null}
+        </DialogContent>
+      </Dialog>
 
       <Toast message={message} />
     </div>
